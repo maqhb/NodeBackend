@@ -1,0 +1,50 @@
+require("dotenv").config();
+
+const mongoose = require("mongoose");
+const crypto = require('crypto');
+const jwt = require("jsonwebtoken");
+
+const Scehma = mongoose.Schema;
+const mySecret = process.env.SECRET;
+
+let UserSchema = new Scehma({
+    firstName : {type: String, required: [true, "First Name is required"]},
+    lastName : {type: String, required: [true, "Second name is required"]},
+    email : {type: String, required: [true, "Email is required"], unique: true},
+    password : {
+        type: String,
+        required: [true, "Password is required"],
+    }
+})
+
+
+//Used to encrpyted password in the databse and called before executing the save method
+UserSchema.methods.doPasswordEncrytion = function(password){
+        console.log("password encryption")
+        this.password = crypto.pbkdf2Sync(password, mySecret ,1000, 512, 'sha512'.toString('hex'))
+}
+
+//Used to validate the entered password during thee authenticating of the user
+UserSchema.methods.doPasswordValidation = function(password){
+    console.log("password decrytion")
+    var hash = crypto.pbkdf2Sync(password, mySecret,1000, 512, 'sha512'.toString('hex'))
+    return hash == this.password;
+}
+
+UserSchema.methods.generateJWT = function() {
+    return jwt.sign({
+        email: this.email,
+        id: this._id
+    }, mySecret, {expiresIn: '1h'});
+}
+  
+UserSchema.methods.toAuthJSON = function() {
+    return {
+        _id: this._id,
+        email: this.email,
+        token: this.generateJWT(),
+    };
+};
+
+
+module.exports = mongoose.model("User", UserSchema)
