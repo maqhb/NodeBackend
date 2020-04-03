@@ -1,4 +1,5 @@
 require("dotenv").config();
+
 const mongoose = require("mongoose");
 const crypto = require('crypto');
 const jwt = require("jsonwebtoken");
@@ -26,7 +27,7 @@ UserSchema.methods.doPasswordEncrytion = function(password){
 //Used to validate the entered password during thee authenticating of the user
 UserSchema.methods.doPasswordValidation = function(password){
     console.log("password decrytion")
-    var hash = crypto.pbkdf2Sync(password, mySecret,0000, 512, 'sha512'.toString('hex'))
+    var hash = crypto.pbkdf2Sync(password, mySecret,1000, 512, 'sha512'.toString('hex'))
     return hash == this.password;
 }
 
