@@ -20,13 +20,11 @@ let UserSchema = new Scehma({
 
 //Used to encrpyted password in the databse and called before executing the save method
 UserSchema.methods.doPasswordEncrytion = function(password){
-        console.log("password encryption")
-        this.password = crypto.pbkdf2Sync(password, mySecret ,1000, 512, 'sha512'.toString('hex'))
+    this.password = crypto.pbkdf2Sync(password, mySecret ,1000, 512, 'sha512'.toString('hex'))
 }
 
 //Used to validate the entered password during thee authenticating of the user
 UserSchema.methods.doPasswordValidation = function(password){
-    console.log("password decrytion")
     var hash = crypto.pbkdf2Sync(password, mySecret,1000, 512, 'sha512'.toString('hex'))
     return hash == this.password;
 }

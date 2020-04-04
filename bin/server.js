@@ -1,16 +1,11 @@
 const dotenv = require("dotenv")
 dotenv.config()
-const morgan  = require("morgan")
 const winston_logger = require("winston").loggers
 
-const winston = require("./config/logger")
-const loggercategories = require("./config/loggercategories")
 const database = require("./database")
 const app = require("../index")
 
-//Combinig morgan and winston for logging purpose
-app.use(morgan('combined', { stream: winston.stream }))
-loggercategories.configLoggerCategories()
+
 
 const logger = winston_logger.get("server.js")
 //Create connection with mongodb and make that connection globally accessible and also handle failure of

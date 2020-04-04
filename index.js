@@ -1,10 +1,17 @@
 const express =  require("express")
 const body_parser = require("body-parser")
+const morgan  = require("morgan")
 
 const auth_router = require("./router/auth_router")
 
+const winston = require("./bin/config/logger")
+const loggercategories = require("./bin/config/loggercategories")
 
 const app = express()
+
+//Combinig morgan and winston for logging purpose
+app.use(morgan('combined', { stream: winston.stream }))
+loggercategories.configLoggerCategories()
 
 // parse requests of content-type - application/x-www-form-urlencoded
 app.use(body_parser.urlencoded({ extended: true }))

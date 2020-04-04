@@ -10,8 +10,9 @@ module.exports = {
         if(email == "" && password == ""){
             res.send("Email and password must not be empty")
         }else{
+            try{
             User.findOne({email : email},(err,user)=>{
-                if(err === null){
+                if(err === null && user !== null){
                     if(user.doPasswordValidation(password)){
                         res.statusCode = 200;
                         res.send({session : user.toAuthJSON()})
@@ -22,9 +23,11 @@ module.exports = {
                 }else{
                     res.statusCode = 505;                        
                     res.send("Email or Password is wrong")
-                    logger.error("User not founded")
                 }
             })
+        }catch(err){
+            logger.error(err)
+        }
         }
     },
 
@@ -35,13 +38,14 @@ module.exports = {
         user = new User({firstName : firstName, lastName : lastName, email : email, password : password});
         
         const error = user.validateSync()
-        if(error != null){
+        if(error !== null){
             logger.error(error)
             res.statusCode = 505
             res.send("User account creation failed")
         }else{
-            user.doPasswordEncrytion(password)
-            user.save(function(error){
+            try{
+                user.doPasswordEncrytion(password)
+                user.save(function(error){
                     if(error){
                         logger.error(error.message)
                         res.statusCode = 505;
@@ -50,7 +54,12 @@ module.exports = {
                         res.statusCode = 200;
                         res.send({session : user.toAuthJSON()})
                     }
-                }) 
+                })
+            }catch(err){
+                res.statusCode = 505
+                res.send("Account creation failed")
+                logger.error(err)
+            }
        }
     }
 }
