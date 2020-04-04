@@ -38,7 +38,7 @@ module.exports = {
         user = new User({firstName : firstName, lastName : lastName, email : email, password : password});
         
         const error = user.validateSync()
-        if(error !== null){
+        if(error){
             logger.error(error)
             res.statusCode = 505
             res.send("User account creation failed")
