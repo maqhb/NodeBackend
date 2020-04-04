@@ -1,4 +1,4 @@
-const User = require("../schema/User")
+const User = require("../Schema/User")
 
 const winston = require("winston").loggers
 
