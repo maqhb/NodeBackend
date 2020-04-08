@@ -4,8 +4,8 @@ const winston_logger = require("winston").loggers
 
 const database = require("./database")
 const app = require("../index")
-
-
+const https = require('https');
+const fs = require('fs');
 
 const logger = winston_logger.get("server.js")
 //Create connection with mongodb and make that connection globally accessible and also handle failure of
@@ -25,9 +25,18 @@ async function configServer(){
 function startServer(){
     const port = (process.env.PORT || 3000)
 
-    app.listen(port, ()=>{
-        logger.info("Server is listening on >"+port)
-    })
+    https.createServer({
+        key: fs.readFileSync('key.pem'),
+        cert: fs.readFileSync('cert.pem')
+    }, app)
+    .listen(port,
+        ()=>{
+            logger.info("Server is listening on >"+port)
+        }
+        );
+
+    
+    
 }
 
 //Try three times to connect after every 30sec, in case of failure exit with 1
