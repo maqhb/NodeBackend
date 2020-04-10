@@ -1,7 +1,8 @@
 const express =  require("express")
 const body_parser = require("body-parser")
 const morgan  = require("morgan")
-const cookieParser = require('cookie-parser'); 
+const cookieParser = require('cookie-parser');
+const cors = require("cors")
 
 const auth_router = require("./router/auth_router")
 
@@ -19,6 +20,7 @@ app.use(body_parser.urlencoded({ extended: true }))
   // parse requests of content-type - application/json
 app.use(body_parser.json())
 app.use(cookieParser()); 
+app.use(cors())
 
 app.use("/", auth_router)
 
