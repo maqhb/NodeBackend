@@ -26,8 +26,8 @@ function startServer(){
     const port = (process.env.PORT || 3000)
 
     https.createServer({
-        key: fs.readFileSync('key.pem'),
-        cert: fs.readFileSync('cert.pem')
+        key: process.env.PRIVATEKEY,
+        cert: process.env.CERTIFICATE
     }, app)
     .listen(port,
         ()=>{
