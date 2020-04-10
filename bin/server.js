@@ -25,6 +25,7 @@ async function configServer(){
 function startServer(){
     const port = (process.env.PORT || 3000)
 
+    /**
     https.createServer({
         key: process.env.PRIVATEKEY,
         cert: process.env.CERTIFICATE
@@ -34,9 +35,10 @@ function startServer(){
             logger.info("Server is listening on >"+port)
         }
         );
-
-    
-    
+    */
+    app.listen(port, ()=>{
+    logger.info("Server is listening on >"+port)
+        })
 }
 
 //Try three times to connect after every 30sec, in case of failure exit with 1
