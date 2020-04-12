@@ -1,8 +1,4 @@
 const UserTokens = require("../Schema/UserTokens")
-const Inst_Token = require("../Schema/Inst_token")
-
-const mongoose = require("mongoose").Schema;
-
 
 const winston = require("winston").loggers
 
@@ -10,7 +6,7 @@ module.exports = {
 
     //Setting Tokens
     setFb_Token : function(req, res){
-        const logger = winston.get('userController.js')
+        const logger = winston.get('OAuthTokenController.js')
         const {userId, fbToken} = req.body
         if(fbToken){
             try{
@@ -60,7 +56,7 @@ module.exports = {
         }
     },
     setTw_Token : function(req, res){  
-        const logger = winston.get('userController.js')
+        const logger = winston.get('OAuthTokenController.js')
         const {userId, twToken} = req.body
         if(twToken){
             try{
@@ -110,7 +106,7 @@ module.exports = {
         }     
     },
     setInst_Token : function(req, res){
-        const logger = winston.get('userController.js')
+        const logger = winston.get('OAuthTokenController.js')
         const {userId, instToken} = req.body
         if(instToken){
             try{
@@ -161,7 +157,7 @@ module.exports = {
         }               
     },
     setPin_Token : function(req, res){
-        const logger = winston.get('userController.js')
+        const logger = winston.get('OAuthTokenController.js')
         const {userId, pinToken} = req.body
         if(pinToken){
             try{
@@ -213,7 +209,7 @@ module.exports = {
 
     //Getting Tokens
     getFb_Token : function(req, res){
-        const logger = winston.get('userController.js')
+        const logger = winston.get('OAuthTokenController.js')
         const userId = req.params.userId
         if(userId){
             try{
@@ -242,7 +238,7 @@ module.exports = {
         }
     },
     getTw_Token : function(req, res){  
-        const logger = winston.get('userController.js')
+        const logger = winston.get('OAuthTokenController.js')
         const userId = req.params.userId
         if(userId){
             try{
@@ -271,7 +267,7 @@ module.exports = {
         }    
     },
     getInst_Token : function(req, res){
-        const logger = winston.get('userController.js')
+        const logger = winston.get('OAuthTokenController.js')
         const userId = req.params.userId
         if(userId){
             try{
@@ -300,7 +296,7 @@ module.exports = {
         }       
     },
     getPin_Token : function(req, res){
-        const logger = winston.get('userController.js')
+        const logger = winston.get('OAuthTokenController.js')
         const userId = req.params.userId
         if(userId){
             try{
