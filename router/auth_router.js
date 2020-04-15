@@ -12,10 +12,10 @@ router.post("/authenticateUser/",userController.authenticateUser)
 router.post("/createUser/", userController.registerUser)
 
 //Validating OAUTH token from platforms like FB,TW
-router.post('/validate_fb_token/',tokenValidator.postWithAuth, validate_OAuthToken.validateFb_Token)
-router.post('/validate_tw_token/',tokenValidator.postWithAuth, validate_OAuthToken.validateTw_Token)
-router.post('/validate_inst_token/',tokenValidator.postWithAuth, validate_OAuthToken.validateInst_Token)
-router.post('/validate_pin_token/',tokenValidator.postWithAuth, validate_OAuthToken.validatePin_Token)
+router.post('/validate_fb_token/', validate_OAuthToken.validateFb_Token)
+router.post('/validate_tw_token/', validate_OAuthToken.validateTw_Token)
+router.post('/validate_inst_token/', validate_OAuthToken.validateInst_Token)
+router.post('/validate_pin_token/', validate_OAuthToken.validatePin_Token)
 
 
 //Setting tokens
