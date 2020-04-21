@@ -23,7 +23,7 @@ module.exports ={
               'method': 'POST',
               'url': 'https://api.instagram.com/oauth/access_token',
               'headers': {
-                // 'Cookie': 'ig_did=A84700C1-3F60-40B1-9CEA-359756734FEB; csrftoken=IaeKIYzzYxjqsRcazHAP8aJFHVfG8a2u; mid=Xpdr7AAEAAGx2C9U0uSFk7pxiv0V'
+                
               },
               formData: {
                 'client_id': process.env.insta_client_id,
