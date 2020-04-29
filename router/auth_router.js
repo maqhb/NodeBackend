@@ -28,6 +28,8 @@ router.post("/inst_token/" ,tokenValidator.postWithAuth,oAuthTokensController.se
 router.post("/pin_token/",tokenValidator.postWithAuth ,oAuthTokensController.setPin_Token)
 
 //Getting tokens
+router.get("/get_tokens/:userId",tokenValidator.getWithAuth ,oAuthTokensController.getOAuthTokens)
+
 router.get("/fb_token/:userId",tokenValidator.getWithAuth ,oAuthTokensController.getFb_Token)
 
 router.get("/tw_token/:userId/",tokenValidator.getWithAuth,oAuthTokensController.getTw_Token)

@@ -1,4 +1,5 @@
 const UserTokens = require("../Schema/UserTokens")
+const Tokens = require("./Tokens")
 
 const winston = require("winston").loggers
 
@@ -105,10 +106,12 @@ module.exports = {
             res.send("Twitter Token must not be null")
         }     
     },
+    //get short term token and convert it into long term token and store it in db
     setInst_Token : function(req, res){
         const logger = winston.get('OAuthTokenController.js')
-        const {userId, instToken} = req.body
-        if(instToken){
+        const {userId, instShortToken} = req.body 
+        if(instShortToken){
+            const instToken = Tokens.getInstLongToken(instShortToken) //Get long term token with the help of short term token
             try{
                 UserTokens.findOne({userId : userId},(err,userTokens)=>{
                     if(err){           
@@ -323,5 +326,37 @@ module.exports = {
             res.statusCode = 500
             res.send("User Id must be provided of user, to whom token belongs")
         }
+    },
+    getOAuthTokens : function(req, res){
+        res.header({Content_Type:"application/json"})
+        const logger = winston.get('OAuthTokenController.js')
+        const userId = req.params.userId
+        if(userId){
+            try{
+                console.log(userId)
+                UserTokens.findOne({userId : userId},(err,userTokens)=>{
+                    if(err){           
+                        logger.error(err)
+                        res.statusCode = 500;                        
+                        res.send("Error occur during getting token "+err)         
+                    }else{
+                        if(userTokens){
+                            res.statusCode = 200
+                            res.send(userTokens)
+                        }else{
+                            res.statusCode = 404;
+                            res.send("Tokens not founded")
+                        }                    
+                    }
+                })
+            }catch(err){
+                logger.error(err)
+                res.statusCode = 500;                        
+                res.send("Error occur during getting token "+err)  
+            }
+        }else{
+            res.statusCode = 500
+            res.send("User Id must be provided of user, to whom token belongs")
+        }       
     }
 }

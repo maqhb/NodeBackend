@@ -1,4 +1,3 @@
-var axios = require('axios');
 require("dotenv").config();
 
 const winston = require("winston").loggers
@@ -16,39 +15,37 @@ module.exports ={
     validateInst_Token : function(req, res){
         const logger = winston.get('Store_OAuthToken.js')
         const {tw_token} = req.body
-
-        if(tw_token){            
-            
+        if(tw_token){                       
             var options = {
               'method': 'POST',
               'url': 'https://api.instagram.com/oauth/access_token',
-              'headers': {
-                // 'Cookie': 'ig_did=A84700C1-3F60-40B1-9CEA-359756734FEB; csrftoken=IaeKIYzzYxjqsRcazHAP8aJFHVfG8a2u; mid=Xpdr7AAEAAGx2C9U0uSFk7pxiv0V'
-              },
               formData: {
                 'client_id': process.env.insta_client_id,
                 'client_secret': process.env.insta_client_secret,
                 'grant_type': 'authorization_code',
                 'redirect_uri': 'https://localhost:3000/instagaram-redirect/',
-                'code': 'AQCQR88F-6Zyd_uGM8siNCvnjMfRDV60pd1h4L8229c-am1nESuQ0-cdf1zjAb4H4PBQUlokT7ngg2lCTa_tz-ATBJQEG8KvUfRFTD2JfPI6wqtpDYN379NNzM_TE-xjkgccHzkGp2ZK7sd5tKO9x_3UGezu_qWK4A9u20Z7tLsYXed8xvaPAgAozrXjTpQbcCqTOUSarqUyGdr31O1RRtnSegGg13KLZHhdq4Ym-bN2_g'
+                'code': tw_token
               }
             };
-            request(options, function (error, response) { 
+            request(options, function (error, response) {                 
               if (error) {
                   logger.error(error);
-                  res.statusCode = 400;
-                  res.send(error);
+                  res.statusCode = 200;
+                  res.json({"error":error.code})
               }
               else {
-                  logger.info(response);
+                let obj = JSON.parse(response.body)
                   res.statusCode = 200;
-                  res.send(response);
+                  if(obj.access_token !== undefined){
+                      res.json({"token":response.body})
+                  }else{
+                      console.log("errors")
+                      res.json({"error":JSON.parse(response.body)})
+                  }
               }
-              console.log(response.body);
-            });
-            
+            });            
         }else{
-            res.statusCode =500
+            res.statusCode =200
             res.send("Instagram token not available")
         }
     },
