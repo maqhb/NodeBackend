@@ -107,36 +107,43 @@ module.exports = {
         }     
     },
     //get short term token and convert it into long term token and store it in db
-    setInst_Token : function(req, res){
+    set_Basic_Inst_Token : async function(req, res){
         const logger = winston.get('OAuthTokenController.js')
-        const {userId, instShortToken} = req.body 
+        const {userId, instShortToken,clientId} = req.body 
         if(instShortToken){
-            const instToken = Tokens.getInstLongToken(instShortToken) //Get long term token with the help of short term token
+            let instToken = await Tokens.getInstLongToken(instShortToken) //Get long term token with the help of short term token
+            if(instToken.access_token === undefined){
+                logger.error(instToken.message)
+                res.statusCode = 200;                        
+                res.json({"error":"Error occur during setting token "+instToken.message}) 
+            }        
             try{
                 UserTokens.findOne({userId : userId},(err,userTokens)=>{
                     if(err){           
                         logger.error(err)
-                        res.statusCode = 500;                        
-                        res.send("Error occur during setting token "+err)         
+                        res.statusCode = 200;                        
+                        res.json({"error":"Error occur during setting token "+err})         
                     }else{                        
                         if(userTokens){                        
-                            userTokens.inst_token = instToken
+                            userTokens.inst_token.basic_token = instToken
+                            userTokens.inst_token.basic_token.userId = clientId//Instagram user account id
                             UserTokens.updateOne({userId : userId},userTokens, (err, resp)=>{
                                 if(err){
-                                    res.statusCode = 500
-                                    res.send("Setting Instagram token failed  "+err)
+                                    res.statusCode = 200
+                                    res.json({"error":"Setting Instagram token failed  "+err})
                                 }else{
                                     if(resp.nModified===0){
                                         res.statusCode = 200
-                                        res.send("Same Token")
+                                        res.json({"token":instToken.access_token})
                                     }else{
                                         res.statusCode = 200
-                                        res.send("Token Setted")
+                                        res.json({"token":instToken.access_token})
                                     }
                                 }                                              
                             })                                       
                         }else{
-                            let userTokens = new UserTokens({userId : userId, inst_token : instToken})
+                            instToken.userId = clientId
+                            let userTokens = new UserTokens({userId : userId, inst_token :{basic_token: instToken}})
                             userTokens.save(function(error){
                                 if(error){
                                     logger.error(error.message)
@@ -144,7 +151,7 @@ module.exports = {
                                     res.send(error.message)
                                 }else{
                                     res.statusCode = 200;
-                                    res.send("Token Setted")
+                                    res.json({"token":instToken})
                                 }
                             })
                         }                    
@@ -152,6 +159,8 @@ module.exports = {
                 })
             }catch(err){
                 logger.error(err)
+                res.statusCode = 200
+                 res.json({"error":"Setting Instagram token failed  "+err})
             }
         }
         else{
@@ -269,33 +278,34 @@ module.exports = {
             res.send("User Id must be provided of user, to whom token belongs")
         }    
     },
-    getInst_Token : function(req, res){
+    get_Basic_Inst_Token : function(req, res){
         const logger = winston.get('OAuthTokenController.js')
         const userId = req.params.userId
         if(userId){
             try{
-                console.log(userId)
                 UserTokens.findOne({userId : userId},(err,userTokens)=>{
                     if(err){           
                         logger.error(err)
-                        res.statusCode = 500;                        
-                        res.send("Error occur during getting token "+err)         
+                        res.statusCode = 200;                        
+                        res.json({"error":"Error occur during getting token "+err})         
                     }else{
                         if(userTokens){
                             res.statusCode = 200
-                            res.send(userTokens.inst_token)
+                            res.json({"token":userTokens.inst_token.basic_token})
                         }else{
                             res.statusCode = 404;
-                            res.send("Tokens not founded")
+                            res.json({"error":"Tokens not founded"})
                         }                    
                     }
                 })
             }catch(err){
                 logger.error(err)
+                res.statusCode = 200
+                res.json({"error":"Error occur during getting token "+err})
             }
         }else{
-            res.statusCode = 500
-            res.send("User Id must be provided of user, to whom token belongs")
+            res.statusCode = 200
+            res.json({"error":"User Id must be provided of user, to whom token belongs"})
         }       
     },
     getPin_Token : function(req, res){
@@ -337,26 +347,26 @@ module.exports = {
                 UserTokens.findOne({userId : userId},(err,userTokens)=>{
                     if(err){           
                         logger.error(err)
-                        res.statusCode = 500;                        
-                        res.send("Error occur during getting token "+err)         
+                        res.statusCode = 200;                        
+                        res.json({"error":"Error occur during getting token "+err})         
                     }else{
                         if(userTokens){
                             res.statusCode = 200
-                            res.send(userTokens)
+                            res.json({"token":userTokens})
                         }else{
                             res.statusCode = 404;
-                            res.send("Tokens not founded")
+                            res.json({"error":"Tokens not founded"})
                         }                    
                     }
                 })
             }catch(err){
                 logger.error(err)
-                res.statusCode = 500;                        
-                res.send("Error occur during getting token "+err)  
+                res.statusCode = 200;                        
+                res.json({"error":"Error occur during getting token "+err})  
             }
         }else{
-            res.statusCode = 500
-            res.send("User Id must be provided of user, to whom token belongs")
+            res.statusCode = 200
+            res.json({"error":"User Id must be provided of user, to whom token belongs"})
         }       
     }
 }

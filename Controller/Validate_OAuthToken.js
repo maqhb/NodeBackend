@@ -39,7 +39,7 @@ module.exports ={
                   if(obj.access_token !== undefined){
                       res.json({"token":response.body})
                   }else{
-                      console.log("errors")
+                      logger.error("Token not received on getting short term instagram token")
                       res.json({"error":JSON.parse(response.body)})
                   }
               }

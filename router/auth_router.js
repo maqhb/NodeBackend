@@ -23,7 +23,7 @@ router.post("/fb_token/",tokenValidator.postWithAuth ,oAuthTokensController.setF
 
 router.post("/tw_token/",tokenValidator.postWithAuth,oAuthTokensController.setTw_Token)
 
-router.post("/inst_token/" ,tokenValidator.postWithAuth,oAuthTokensController.setInst_Token)
+router.post("/basic_inst_token/" ,tokenValidator.postWithAuth,oAuthTokensController.set_Basic_Inst_Token)
 
 router.post("/pin_token/",tokenValidator.postWithAuth ,oAuthTokensController.setPin_Token)
 
@@ -34,7 +34,7 @@ router.get("/fb_token/:userId",tokenValidator.getWithAuth ,oAuthTokensController
 
 router.get("/tw_token/:userId/",tokenValidator.getWithAuth,oAuthTokensController.getTw_Token)
 
-router.get("/inst_token/:userId/",tokenValidator.getWithAuth ,oAuthTokensController.getInst_Token)
+router.get("/basic_inst_token/:userId/",tokenValidator.getWithAuth ,oAuthTokensController.get_Basic_Inst_Token)
 
 router.get("/pin_token/:userId",tokenValidator.getWithAuth,oAuthTokensController.getPin_Token)
 
